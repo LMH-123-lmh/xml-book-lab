@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--The "catalogue" is the sole root element, 
+and each "book" has an "id" attribute.-->
+<catalogue>
+    <book id="b001">
+        <title>HTML &amp; CSS</title>
+        <author>Liu Menghan</author>
+        <price>19.9</price>
+    </book>
+    <book id="b002">
+        <title>JavaScript</title>
+        <author>Merry</author>
+        <price>25.5</price>
+    </book>
+    <book id="b003">
+        <title>JSON</title>
+        <author>Jane</author>
+        <price>16.5</price>
+    </book>
+</catalogue>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XML Book Catalogue</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .book-item{
+            border:1px solid #666; 
+            padding:15px; 
+            margin:12px 0; 
+            max-width:400px; 
+        }
+        .book-item h2{ 
+            margin: 0 0 10px; 
+            font-size: 20px; 
+        }
+        .book-item p{ 
+            margin: 5px 0; 
+        }
+        .error { 
+            color: #a00000; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Book from XML file</h1>
+    <div id="outputArea"></div>
+
+    <script>
+        // Step 1: fetch the XML file
+        fetch("book.xml")
+        .then(function(response) {
+            // response holds the file from server
+            // convert response to raw text string (xmlText)
+            if (!response.ok) {
+                throw new Error("HTTP error: " + response.status);
+            }
+
+            return response.text();
+        })
+        .then(function(xmlText) {
+            // Step2: parse xmlText into XML DOM object
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            if (xmlDoc.querySelector("parsererror")) {
+                throw new Error("Invalid XML format");
+            }
+            // Step3: get all <book> elements from parsed XML
+            const allBooks = xmlDoc.getElementsByTagName("book");
+            const outputDiv = document.getElementById("outputArea");
+
+           // Step4: loop through each child
+            for (let i = 0; i < allBooks.length; i++) {
+                const oneBook = allBooks[i];
+                //get text inside <book> tag
+                const bookId = oneBook.getAttribute("id");
+                const bookTitle = oneBook.querySelector("title").textContent;
+                const bookAuthor = oneBook.querySelector("author").textContent;
+                const bookPrice = oneBook.querySelector("price").textContent;
+
+                //create HTML block to show data
+                const div = document.createElement("div");
+                div.className = "book-item";
+                 div.innerHTML = `
+                    ID: ${bookId}<br>
+                    Title: ${bookTitle}<br>
+                    Author: ${bookAuthor}<br>
+                    Price: ${bookPrice}
+                `;
+                 outputDiv.appendChild(div);
+            }
+        })
+        .catch(function(error) {
+            //runs if fetch fails
+            console.error("Error:", error);
+            const status = document.getElementById("status");
+            status.className = "error";
+            status.textContent = "Cannot load books: " + error.message;
+        });
+    </script>
+</body>
+</html>
